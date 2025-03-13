@@ -1,0 +1,22 @@
+1. Selezionare tutti gli studenti iscritti al Corso di Laurea in Economia
+SELECT * FROM `students` as st JOIN `degrees` as deg on st.degree_id = deg.id WHERE deg.name LIKE 'Corso di Laurea in Economia%';
+
+ 2. Selezionare tutti i Corsi di Laurea Magistrale del Dipartimento di Neuroscienze
+SELECT * FROM `degrees` as deg JOIN `departments` as dep ON deg.department_id = dep.id WHERE dep.name LIKE '%Dipartimento di Neuroscienze' AND deg.name LIKE '%Corso di Laurea Magistrale%';
+
+ 3. Selezionare tutti i corsi in cui insegna Fulvio Amato (id=44)
+SELECT deg.name FROM `degrees` as deg JOIN `courses` as c ON deg.id = c.degree_id JOIN `course_teacher` as ct ON c.id = ct.course_id JOIN `teachers` as t ON ct.teacher_id = t.id WHERE t.name = 'Fulvio' AND t.surname = 'Amato';
+
+ 4. Selezionare tutti gli studenti con i dati relativi al corso di laurea a cui sono iscritti e il relativo dipartimento, in ordine alfabetico per cognome e nome
+SELECT st.surname, st.name, deg.name, dep.name FROM `students` as st JOIN `degrees` as deg ON st.degree_id = deg.id JOIN `departments` as dep ON deg.department_id = dep.id ORDER BY st.surname ASC;
+
+ 5. Selezionare tutti i corsi di laurea con i relativi corsi e insegnanti
+SELECT deg.name, c.name, t.surname, t.name FROM `degrees` as deg JOIN `courses` as c ON deg.id = c.degree_id JOIN `departments` as dep ON deg.department_id = dep.id JOIN `course_teacher` as ct ON ct.course_id = c.id JOIN `teachers` as t ON ct.teacher_id = t.id;
+
+ 6. Selezionare tutti i docenti che insegnano nel Dipartimento di Matematica (54)
+SELECT DISTINCT  t.surname, t.name, dep.name FROM `degrees` as deg JOIN `courses` as c ON deg.id = c.degree_id JOIN `departments` as dep ON deg.department_id = dep.id JOIN `course_teacher` as ct ON ct.course_id = c.id JOIN `teachers` as t ON ct.teacher_id = t.id WHERE dep.name = 'Dipartimento di Matematica';
+
+ 7. BONUS: Selezionare per ogni studente il numero di tentativi sostenuti
+ per ogni esame, stampando anche il voto massimo. Successivamente,
+ filtrare i tentativi con voto minimo 18
+SELECT s.id, s.name, s.surname, c.name, COUNT(es.vote) as tentativi, max(es.vote) as voto_massimo FROM students as s JOIN exam_student as es ON s.id = es.student_id JOIN exams as  e ON es.exam_id = e.id JOIN courses as c ON e.course_id = c.id GROUP BY s.id, c.id HAVING voto_massimo >= 18;
